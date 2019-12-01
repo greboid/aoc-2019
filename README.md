@@ -37,4 +37,4 @@ Solutions to advent of code 2019
 
 ```
 
-Not sure about running yet, most likely  `run.sh <day>`
+Ensure docker is available, then execute `run.sh <day>`, days should be zero prefixed
