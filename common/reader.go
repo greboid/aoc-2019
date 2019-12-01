@@ -11,5 +11,5 @@ func ReadInput(path string) []string {
 	if err != nil {
 		log.Panicf("Error reading input: %s", err)
 	}
-	return strings.Split(strings.Replace(string(data), "\r\n", "\n", -1), "\n")
+	return strings.Split(strings.TrimSpace(strings.Replace(string(data), "\r\n", "\n", -1)), "\n")
 }
