@@ -1,15 +1,24 @@
 package common
 
 import (
-	"io/ioutil"
-	"log"
-	"strings"
+	"bufio"
+	"os"
 )
 
 func ReadInput(path string) []string {
-	data, err := ioutil.ReadFile(path)
+	file, err := os.Open(path)
 	if err != nil {
-		log.Panicf("Error reading input: %s", err)
+		panic("Unable to open file.")
 	}
-	return strings.Split(strings.TrimSpace(strings.Replace(string(data), "\r\n", "\n", -1)), "\n")
+	defer func() { _ = file.Close() }()
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	if scanner.Err() != nil {
+		panic(scanner.Err())
+	}
+	return lines
 }

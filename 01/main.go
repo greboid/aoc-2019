@@ -3,7 +3,6 @@ package main
 import (
 	"aoc-2019/common"
 	"fmt"
-	"log"
 	"strconv"
 )
 
@@ -12,12 +11,14 @@ func getFuelForModule(mass int64) int64 {
 }
 
 func getAnswer(input []string) (int64, int64) {
-	var answer int64 = 0
-	var recursiveAnswer int64 = 0
+	var (
+		answer          int64 = 0
+		recursiveAnswer int64 = 0
+	)
 	for _, line := range input {
 		mass, err := strconv.ParseInt(line, 10, 64)
 		if err != nil {
-			log.Panicf("Input not an int")
+			panic("Input not an int")
 		}
 		fuelForModule := getFuelForModule(mass)
 		answer += fuelForModule
