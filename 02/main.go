@@ -3,7 +3,6 @@ package main
 import (
 	"aoc-2019/common"
 	"fmt"
-	"strconv"
 	"strings"
 )
 
@@ -59,7 +58,7 @@ func getInput(input string) []int {
 	opcodesStr := strings.Split(strings.TrimSpace(input), ",")
 	var opcodes []int
 	for _, opcode := range opcodesStr {
-		opcodes = append(opcodes, stringToInt(opcode))
+		opcodes = append(opcodes, common.StringToInt(opcode))
 	}
 	return opcodes
 }
@@ -70,12 +69,4 @@ func main() {
 	part2 := part2(input)
 	fmt.Printf("%d\n", part1)
 	fmt.Printf("%d\n", part2)
-}
-
-func stringToInt(s string) int {
-	i, err := strconv.Atoi(s)
-	if err != nil {
-		panic("Unable to convert to int")
-	}
-	return i
 }

@@ -3,6 +3,7 @@ package common
 import (
 	"bufio"
 	"os"
+	"strconv"
 )
 
 func ReadInput(path string) []string {
@@ -21,4 +22,12 @@ func ReadInput(path string) []string {
 		panic(scanner.Err())
 	}
 	return lines
+}
+
+func StringToInt(s string) int {
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		panic("Unable to convert to int")
+	}
+	return i
 }
