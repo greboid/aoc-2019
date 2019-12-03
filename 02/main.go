@@ -5,9 +5,17 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"sync"
 )
 
-func compute(opcodes []int) int {
+type opcodeReturn struct {
+	opcode int
+	noun int
+	verb int
+}
+
+func compute(opcodes []int, wg *sync.WaitGroup, results chan opcodeReturn) int {
+	returnValue := opcodeReturn{0, opcodes[1], opcodes[2]}
 	var idx, arg1, arg2, resultPos int
 	for {
 		switch opcodes[idx] {
@@ -22,8 +30,14 @@ func compute(opcodes []int) int {
 			resultPos = opcodes[idx+3]
 			opcodes[resultPos] = opcodes[arg1] * opcodes[arg2]
 		case 99:
+			if wg != nil && results != nil {
+				returnValue.opcode = opcodes[0]
+				wg.Done()
+				results <- returnValue
+			}
 			return opcodes[0]
 		default:
+			wg.Done()
 			panic("Unknown opcode")
 		}
 		idx = idx + 4
@@ -31,6 +45,8 @@ func compute(opcodes []int) int {
 }
 
 func part2(opcodes []int) int {
+	results := make(chan opcodeReturn)
+	var wg sync.WaitGroup
 	for noun := 0; noun < 100; noun++ {
 		for verb := 0; verb < 100; verb++ {
 			checkOpcodes := make([]int, len(opcodes))
@@ -38,10 +54,14 @@ func part2(opcodes []int) int {
 
 			checkOpcodes[1] = noun
 			checkOpcodes[2] = verb
-			result := compute(checkOpcodes)
-			if result == 19690720 {
-				return 100 * noun + verb
-			}
+			wg.Add(1)
+			go compute(checkOpcodes, &wg, results)
+		}
+	}
+	wg.Wait()
+	for result := range results {
+		if result.opcode == 19690720 {
+			return 100 * result.noun + result.verb
 		}
 	}
 	panic("Not found an answer")
@@ -52,7 +72,7 @@ func part1(opcodes []int) int {
 	copy(checkOpcodes, opcodes)
 	checkOpcodes[1] = 12
 	checkOpcodes[2] = 2
-	return compute(checkOpcodes)
+	return compute(checkOpcodes, nil, nil)
 }
 
 func getInput(input string) []int {
