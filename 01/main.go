@@ -4,6 +4,7 @@ import (
 	"aoc-2019/common"
 	"fmt"
 	"strconv"
+	"time"
 )
 
 func getFuelForModule(mass int64) int64 {
@@ -31,6 +32,7 @@ func getAnswer(input []string) (int64, int64) {
 }
 
 func main() {
+	defer common.OutputTimeTaken(time.Now())
 	input := common.ReadInput("01/input.txt")
 	part1, part2 := getAnswer(input)
 	fmt.Println(part1)

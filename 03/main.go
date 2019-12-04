@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"math"
 	"strings"
+	"time"
 )
 
 func main() {
+	defer common.OutputTimeTaken(time.Now())
 	input := common.ReadInput("03/input.txt")
 	crosses := make([]point, 0)
 	visited := make([]map[point]bool, len(input))

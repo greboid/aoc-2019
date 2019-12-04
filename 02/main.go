@@ -4,6 +4,7 @@ import (
 	"aoc-2019/common"
 	"fmt"
 	"strings"
+	"time"
 )
 
 func compute(opcodes []int) int {
@@ -64,6 +65,7 @@ func getInput(input string) []int {
 }
 
 func main() {
+	defer common.OutputTimeTaken(time.Now())
 	input := getInput(common.ReadInput("02/input.txt")[0])
 	part1 := part1(input)
 	part2 := part2(input)

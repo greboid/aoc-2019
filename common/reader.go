@@ -2,8 +2,10 @@ package common
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strconv"
+	"time"
 )
 
 func ReadInput(path string) []string {
@@ -30,4 +32,13 @@ func StringToInt(s string) int {
 		panic("Unable to convert to int")
 	}
 	return i
+}
+
+func IntToString(i int) string {
+	s := strconv.Itoa(i)
+	return s
+}
+
+func OutputTimeTaken(startTime time.Time) {
+	fmt.Printf("%.3f", time.Now().Sub(startTime).Seconds())
 }
