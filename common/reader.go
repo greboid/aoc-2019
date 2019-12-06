@@ -40,5 +40,5 @@ func IntToString(i int) string {
 }
 
 func OutputTimeTaken(startTime time.Time) {
-	fmt.Printf("%.3f", time.Now().Sub(startTime).Seconds())
+	fmt.Printf("%.3f\n", time.Now().Sub(startTime).Seconds())
 }
