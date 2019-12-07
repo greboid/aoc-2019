@@ -11,62 +11,91 @@ import (
 func main() {
 	defer common.OutputTimeTaken(time.Now())
 	input := common.ReadInput("03/input.txt")
-	crosses := make([]point, 0)
-	visited := make([]map[point]bool, len(input))
-	for lineNumber, line := range input {
-		visited[lineNumber] = make(map[point]bool)
-		current := point{x: 0, y: 0}
-		instructions := strings.Split(strings.TrimSpace(line), ",")
-		for _, instruction := range instructions {
-			magnitude := common.StringToInt(instruction[1:])
-			switch instruction[0] {
-			case 'U':
-				for i := 0; i < magnitude; i++ {
-					current.y++
-					if lineNumber == 1 && visited[0][current] {
-						crosses = append(crosses, current)
-					}
-					visited[lineNumber][current] = true
-				}
-			case 'R':
-				for i := 0; i < magnitude; i++ {
-					current.x++
-					if lineNumber == 1 && visited[0][current] {
-						crosses = append(crosses, current)
-					}
-					visited[lineNumber][current] = true
-				}
-			case 'D':
-				for i := 0; i < magnitude; i++ {
-					current.y--
-					if lineNumber == 1 && visited[0][current] {
-						crosses = append(crosses, current)
-					}
-					visited[lineNumber][current] = true
-				}
-			case 'L':
-				for i := 0; i < magnitude; i++ {
-					current.x--
-					if lineNumber == 1 && visited[0][current] {
-						crosses = append(crosses, current)
-					}
-					visited[lineNumber][current] = true
-				}
+	var wire1 = drawInstruction(strings.Split(input[0], ","))
+	var wire2 = drawInstruction(strings.Split(input[1], ","))
+	fmt.Printf("%d\n", leastDistance(wire1, wire2))
+	fmt.Printf("%d\n", leastSteps(wire1, wire2))
+}
+
+func leastSteps(wire1 wire, wire2 wire) int {
+	shortestLatency := math.MaxInt64
+	for key := range wire1 {
+		_, ok := wire2[key]
+		if ok {
+			steps1 := wire1[key]
+			steps2 := wire2[key]
+			currentLatency := steps1 + steps2
+			if currentLatency < shortestLatency {
+				shortestLatency = currentLatency
 			}
 		}
 	}
-	distances := make(map[point]int)
-	for _, distance := range crosses {
-		distances[distance] = Abs(distance.x) + Abs(distance.y)
-	}
-	smallestDistance := math.MaxInt64
-	for _, distance := range distances {
-		if distance < smallestDistance {
-			smallestDistance = distance
+	return shortestLatency
+}
+
+func leastDistance(wire1 wire, wire2 wire) int {
+	shortestDistance := math.MaxInt64
+	for point := range wire1 {
+		_, ok := wire2[point]
+		if ok {
+			currentDistance := Abs(point.x) + Abs(point.y)
+			if currentDistance < shortestDistance {
+				shortestDistance = currentDistance
+			}
 		}
 	}
-	fmt.Printf("%d\n", smallestDistance)
+	return shortestDistance
 }
+
+func drawInstruction(instructions []string) wire {
+	wire := make(wire)
+	current := point{0, 0}
+	steps := 0
+	for _, instruction := range instructions {
+		magnitude := common.StringToInt(instruction[1:])
+		switch instruction[0] {
+		case 'U':
+			for i := current.y + 1; i < current.y+1+magnitude; i++ {
+				steps++
+				_, ok := wire[point{current.x, i}]
+				if !ok {
+					wire[point{current.x, i}] = steps
+				}
+			}
+			current.y += magnitude
+		case 'R':
+			for i := current.x + 1; i < current.x+1+magnitude; i++ {
+				steps++
+				_, ok := wire[point{i, current.y}]
+				if !ok {
+					wire[point{i, current.y}] = steps
+				}
+			}
+			current.x += magnitude
+		case 'D':
+			for i := current.y - 1; i > current.y-1-magnitude; i-- {
+				steps++
+				_, ok := wire[point{current.x, i}]
+				if !ok {
+					wire[point{current.x, i}] = steps
+				}
+			}
+			current.y -= magnitude
+		case 'L':
+			for i := current.x - 1; i > current.x-1-magnitude; i-- {
+				steps++
+				_, ok := wire[point{i, current.y}]
+				if !ok {
+					wire[point{i, current.y}] = steps
+				}
+			}
+			current.x -= magnitude
+		}
+	}
+	return wire
+}
+
+type wire map[point]int
 
 type point struct {
 	x int
