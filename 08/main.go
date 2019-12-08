@@ -3,11 +3,7 @@ package main
 import (
 	"aoc-2019/common"
 	"fmt"
-	"image"
-	"image/color"
-	"image/png"
 	"math"
-	"os"
 	"strings"
 	"time"
 )
@@ -39,31 +35,6 @@ func outputASCII(imageData [][]int, width int, height int) {
 		fmt.Println()
 	}
 	fmt.Println()
-}
-
-func outputPng(imageData [][]int, width int, height int) {
-	upLeft := image.Point{}
-	lowRight := image.Point{X: width, Y: height}
-	img := image.NewRGBA(image.Rectangle{Min: upLeft, Max: lowRight})
-	for x := range imageData {
-		for y, value := range imageData[x] {
-			switch value {
-			case 0:
-				img.Set(x, y, color.White)
-			case 1:
-				img.Set(x, y, color.Black)
-			}
-		}
-	}
-	f, err := os.OpenFile("output.png", os.O_RDWR, 644)
-	if err != nil {
-		panic("Unable to output part2")
-	}
-	err = png.Encode(f, img)
-	if err != nil {
-		panic("Unable to output part2")
-	}
-	fmt.Println("See output.png")
 }
 
 func buildImage(imageLayers imageLayers) [][]int {
