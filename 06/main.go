@@ -68,5 +68,5 @@ func calculateSantaOrbit(input map[string]string) {
 		i--
 		j--
 	}
-	fmt.Printf("%d\n", len(youPath) + len(sanPath) - commonOrbits*2)
+	fmt.Printf("%d\n", len(youPath)+len(sanPath)-commonOrbits*2)
 }

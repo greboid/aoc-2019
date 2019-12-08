@@ -40,7 +40,7 @@ func part2(opcodes []int) int {
 			checkOpcodes[2] = verb
 			result := compute(checkOpcodes)
 			if result == 19690720 {
-				return 100 * noun + verb
+				return 100*noun + verb
 			}
 		}
 	}
