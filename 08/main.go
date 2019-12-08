@@ -16,7 +16,7 @@ func main() {
 	imageDigits := extractLayers(input, width, height)
 	leastZeros := leastDigitsInLayer(imageDigits, 0)
 	fmt.Printf("%d\n", countDigitInLayer(leastZeros, 1)*countDigitInLayer(leastZeros, 2))
-	imageData := buildImage(imageDigits)
+	imageData := buildImage(imageDigits, width, height)
 	outputASCII(imageData, width, height)
 }
 
@@ -37,10 +37,7 @@ func outputASCII(imageData [][]int, width int, height int) {
 	fmt.Println()
 }
 
-func buildImage(imageLayers imageLayers) [][]int {
-	width := 25
-	height := 6
-
+func buildImage(imageLayers imageLayers, width int, height int) [][]int {
 	outputData := make([][]int, width)
 	for x := range outputData {
 		outputData[x] = make([]int, height)
