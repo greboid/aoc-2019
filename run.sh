@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IMAGE=greboid/aoc-2019-01
+IMAGE=greboid/aoc-2019-02
 
 docker image inspect $IMAGE >/dev/null 2>&1
 if [ $? -ne 0 ]
