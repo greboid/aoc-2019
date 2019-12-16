@@ -15,28 +15,28 @@ func main() {
 }
 
 func part2(program []int) {
-	input := make(chan int, 1)
-	output := make(chan int, 100)
-	halt := make(chan bool, 1)
-	go common.Compute(program, input, output, halt)
-	input <- 5
-	<-halt
+	memory := make([]int, len(program))
+	copy(memory, program)
+	compooter := common.NewCompooter(memory)
+	compooter.Input <- 5
+	go compooter.Run()
+	<-compooter.Halt
 	result := 0
-	for value := range output {
+	for value := range compooter.Output {
 		result = value
 	}
 	fmt.Printf("%d\n", result)
 }
 
 func part1(program []int) {
-	input := make(chan int, 1)
-	output := make(chan int, 100)
-	halt := make(chan bool, 1)
-	go common.Compute(program, input, output, halt)
-	input <- 8
-	<-halt
+	memory := make([]int, len(program))
+	copy(memory, program)
+	compooter := common.NewCompooter(memory)
+	compooter.Input <- 8
+	go compooter.Run()
+	<-compooter.Halt
 	result := 0
-	for value := range output {
+	for value := range compooter.Output {
 		result = value
 	}
 	fmt.Printf("%d\n", result)
