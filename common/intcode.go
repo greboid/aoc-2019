@@ -7,81 +7,104 @@ import (
 func Compute(programInput []int, input chan int, output chan int, halt chan bool) {
 	program := make([]int, len(programInput))
 	copy(program, programInput)
-	var idx int
+	idx := 0
+	relativeBase := 0
+	getPointer := func(index int) *int {
+		for len(program) <= index {
+			program = append(program, 0)
+		}
+		return &program[index]
+	}
+	getParam := func(pos int, instruction int) *int {
+		parameter := program[idx+pos]
+		mode := -1
+		switch pos {
+		case 1:
+			mode = instruction / 100 % 10
+		case 2:
+			mode = instruction / 1000 % 10
+		case 3:
+			mode = instruction / 10000 % 10
+		}
+		switch mode {
+		case 0:
+			return getPointer(parameter)
+		case 1:
+			return &parameter
+		case 2:
+			return getPointer(relativeBase + parameter)
+		default:
+			panic(fmt.Sprintf("fault: invalid parameter mode: ip=%d instruction=%d offset=%d mode=%d", idx, instruction, pos, mode))
+		}
+	}
 	for {
-		paddedIntCode := fmt.Sprintf("%05d", program[idx])
-		opCode := StringToInt(paddedIntCode[3:5])
-		paramModeMap := map[int]bool{
-			1: paddedIntCode[2:3] == "0",
-			2: paddedIntCode[1:2] == "0",
-			3: paddedIntCode[0:1] == "0",
-		}
-		getParam := func(pos int) int {
-			param := program[idx+pos]
-			if paramModeMap[pos] {
-				param = program[program[idx+pos]]
-			}
-			return param
-		}
+		instruction := program[idx]
+		opCode := instruction % 100
+
 		switch opCode {
 		case 1:
-			value1 := getParam(1)
-			value2 := getParam(2)
-			program[program[idx+3]] = value1 + value2
+			value1 := getParam(1, instruction)
+			value2 := getParam(2, instruction)
+			value3 := getParam(3, instruction)
+			*value3 = *value1 + *value2
 			idx += 4
 		case 2:
-			value1 := getParam(1)
-			value2 := getParam(2)
-			program[program[idx+3]] = value1 * value2
+			value1 := getParam(1, instruction)
+			value2 := getParam(2, instruction)
+			value3 := getParam(3, instruction)
+			*value3 = *value1 * *value2
 			idx += 4
 		case 3:
-			program[program[idx+1]] = <-input
+			*getParam(1, instruction) = <-input
 			idx += 2
 		case 4:
-			value1 := getParam(1)
-			output <- value1
+			output <- *getParam(1, instruction)
 			idx += 2
 		case 5:
-			value1 := getParam(1)
-			value2 := getParam(2)
-			if value1 != 0 {
-				idx = value2
+			value1 := getParam(1, instruction)
+			value2 := getParam(2, instruction)
+			if *value1 != 0 {
+				idx = *value2
 			} else {
 				idx += 3
 			}
 		case 6:
-			value1 := getParam(1)
-			value2 := getParam(2)
-			if value1 == 0 {
-				idx = value2
+			value1 := getParam(1, instruction)
+			value2 := getParam(2, instruction)
+			if *value1 == 0 {
+				idx = *value2
 			} else {
 				idx += 3
 			}
 		case 7:
-			value1 := getParam(1)
-			value2 := getParam(2)
-			if value1 < value2 {
-				program[program[idx+3]] = 1
+			value1 := getParam(1, instruction)
+			value2 := getParam(2, instruction)
+			value3 := getParam(3, instruction)
+			if *value1 < *value2 {
+				*value3 = 1
 			} else {
-				program[program[idx+3]] = 0
+				*value3 = 0
 			}
 			idx += 4
 		case 8:
-			value1 := getParam(1)
-			value2 := getParam(2)
-			if value1 == value2 {
-				program[program[idx+3]] = 1
+			value1 := getParam(1, instruction)
+			value2 := getParam(2, instruction)
+			value3 := getParam(3, instruction)
+			if *value1 == *value2 {
+				*value3 = 1
 			} else {
-				program[program[idx+3]] = 0
+				*value3 = 0
 			}
 			idx += 4
+		case 9:
+			relativeBase += *getParam(1, instruction)
+			idx += 2
 		case 99:
 			halt <- true
 			close(output)
 			return
 		default:
-			fmt.Printf("Unknown opcode %d\n", program[idx])
-			panic("")
+			panic(fmt.Sprintf("fault: invalid opcode: ip=%d instruction=%d opcode=%d", idx, instruction, opCode))
 		}
 	}
 }
