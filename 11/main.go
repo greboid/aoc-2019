@@ -26,7 +26,7 @@ func main()  {
 
 func run(program []int, startColour int) (int, map[common.Point]int) {
 	compooter := common.NewCompooter(program)
-	compooter.Output = make(chan int, 100000000)
+	compooter.Output = make(chan int, 1)
 	grid := make(map[common.Point]int, 100)
 	pos := common.Point{}
 	colour := startColour
