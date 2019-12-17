@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -41,4 +42,13 @@ func IntToString(i int) string {
 
 func OutputTimeTaken(startTime time.Time) {
 	fmt.Printf("%.3f\n", time.Now().Sub(startTime).Seconds())
+}
+
+func GetCSVInputArray(input string) []int {
+	opcodesStr := strings.Split(strings.TrimSpace(ReadInput(input)[0]), ",")
+	var opcodes []int
+	for _, opcode := range opcodesStr {
+		opcodes = append(opcodes, StringToInt(opcode))
+	}
+	return opcodes
 }
