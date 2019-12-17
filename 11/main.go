@@ -63,8 +63,8 @@ func drawGrid(grid map[common.Point]int) {
 		min = min.Min(pos)
 		max = max.Max(pos)
 	}
-	for j := 0; j <= 5; j++ {
-		for i := 0; i <= 50; i++ {
+	for j := min.Y; j <= max.Y; j++ {
+		for i := min.X; i <= max.X; i++ {
 			if grid[common.Point{i, j}] == 1 {
 				fmt.Printf(black)
 			} else {
