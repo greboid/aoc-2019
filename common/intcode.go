@@ -5,6 +5,7 @@ import (
 )
 
 type Compooter struct {
+	Name         string
 	idx          int
 	memory       []int
 	relativeBase int
@@ -42,10 +43,10 @@ func (compooter *Compooter) getParam(pos int, instruction int) *int {
 	case 1:
 		return &compooter.memory[compooter.idx+pos]
 	case 2:
-		for len(compooter.memory) <= compooter.relativeBase + compooter.memory[compooter.idx+pos] {
+		for len(compooter.memory) <= compooter.relativeBase+compooter.memory[compooter.idx+pos] {
 			compooter.memory = append(compooter.memory, make([]int, 1024)...)
 		}
-		return &compooter.memory[compooter.relativeBase + compooter.memory[compooter.idx+pos]]
+		return &compooter.memory[compooter.relativeBase+compooter.memory[compooter.idx+pos]]
 	default:
 		panic(fmt.Sprintf("fault: invalid parameter mode: ip=%d instruction=%d offset=%d mode=%d", compooter.idx, instruction, pos, mode))
 	}
