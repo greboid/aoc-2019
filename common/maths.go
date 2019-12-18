@@ -1,8 +1,37 @@
 package common
 
+type Vector struct {
+	X int
+	Y int
+	Z int
+}
+
 type Point struct {
 	X int
 	Y int
+}
+
+func (v Vector) Plus(o Vector) Vector {
+	return Vector{
+		X: v.Z + o.X,
+		Y: v.Y + o.Y,
+		Z: v.Z + o.Z,
+	}
+}
+
+func (v Vector) Minus(o Vector) Vector {
+	return Vector{
+		X: v.X - o.X,
+		Y: v.Y - o.Y,
+		Z: v.Z - o.Z,
+	}
+}
+
+func Abs(i int) int {
+	if i < 0 {
+		return -i
+	}
+	return i
 }
 
 func (this Point) Min(other Point) Point {
