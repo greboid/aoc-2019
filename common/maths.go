@@ -13,7 +13,7 @@ type Point struct {
 
 func (v Vector) Plus(o Vector) Vector {
 	return Vector{
-		X: v.Z + o.X,
+		X: v.X + o.X,
 		Y: v.Y + o.Y,
 		Z: v.Z + o.Z,
 	}
@@ -60,4 +60,37 @@ func max(x, y int) int {
 		return y
 	}
 	return x
+}
+
+func (v Vector) Sign() Vector {
+	return Vector{
+		X: Sign(v.X),
+		Y: Sign(v.Y),
+		Z: Sign(v.Z),
+	}
+}
+
+func (v Vector) Abs() int {
+	return Abs(v.X) + Abs(v.Y) + Abs(v.Z)
+}
+
+func Sign(x int) int {
+	if x > 0 {
+		return 1
+	}
+	if x < 0 {
+		return -1
+	}
+	return 0
+}
+
+func Gcd(a, b int) int {
+	for b != 0 {
+		a, b = b, a%b
+	}
+	return a
+}
+
+func Lcm(a, b int) int {
+	return a / Gcd(a, b) * b
 }
